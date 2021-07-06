@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using EdFi.Admin.LearningStandards.Core.Auth;
 using EdFi.Admin.LearningStandards.Core.Configuration;
 using EdFi.Admin.LearningStandards.Core.Services;
+using EdFi.Admin.LearningStandards.Core.Services.FromCsv;
 using EdFi.Admin.LearningStandards.Core.Services.Interfaces;
+using EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -16,8 +18,6 @@ namespace EdFi.Admin.LearningStandards.Core.Installers
     public static class LearningStandardsServiceCollectionExtensions
     {
         private static readonly Random _jitterer = new Random();
-
-        
 
         public static IServiceCollection AddLearningStandardsServices(this IServiceCollection services, IEdFiOdsApiClientConfiguration odsApiClientConfiguration)
         {
@@ -58,6 +58,34 @@ namespace EdFi.Admin.LearningStandards.Core.Installers
                 .ConfigureDefaultLearningStandardSynchronizationOptions<
                     LearningStandardsSynchronizationOptions>(options => options.ForceFullSync = false);
             
+
+            return services;
+        }
+
+        public static IServiceCollection AddLearningStandardsSyncFromCsvSpecificServices(this IServiceCollection services,
+            IEdFiOdsApiClientConfiguration odsApiClientConfiguration)
+        {
+            // Configuration and Options:
+            services.AddSingleton(odsApiClientConfiguration);
+
+            // Auth Services:
+            services.AddSingleton<IEdFiOdsApiAuthTokenManagerFactory, EdFiOdsApiAuthTokenManagerFactory>();
+
+            // HTTP Client Registration:
+            services.InstallLearningStandardsEdFiHttpClients();
+
+            // CSV data reading and mapping services:
+            services.AddSingleton<IMetaDataRetriever, MetaDataRetriever>();
+            services.AddSingleton<ICsvFileProcessor, CsvFileProcessor>();
+            services.AddSingleton<IDataMappingProcess, DataMappingProcess>();
+            services.AddSingleton<CsvLearningStandardsDataRetriever>();
+            services.AddSingleton<ILearningStandardsCsvDataRetriever>(x => x.GetRequiredService<CsvLearningStandardsDataRetriever>());
+
+            services.AddSingleton<IEdFiBulkJsonPersisterFactory, EdFiBulkJsonPersisterFactory>();
+
+            services.AddSingleton<LearningStandardsCsvSynchronizer>();
+            services.AddSingleton<ILearningStandardsCsvSynchronizer>(x => x.GetRequiredService<LearningStandardsCsvSynchronizer>());
+            services.AddSingleton<ILearningStandardsSyncFromCsvConfigurationValidator, LearningStandardsSyncFromCsvConfigurationValidator>();
 
             return services;
         }
