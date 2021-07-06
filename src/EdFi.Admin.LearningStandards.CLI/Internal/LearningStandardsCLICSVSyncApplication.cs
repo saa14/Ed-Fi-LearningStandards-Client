@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 using CommandLine;
 using EdFi.Admin.LearningStandards.CLI.Internal;
 using EdFi.Admin.LearningStandards.Core;
-using EdFi.Admin.LearningStandards.Core.Configuration;
 using EdFi.Admin.LearningStandards.Core.Installers;
-using EdFi.Admin.LearningStandards.Core.Services;
-using EdFi.Admin.LearningStandards.Core.Services.Interfaces;
+using EdFi.Admin.LearningStandards.Core.Services.FromCsv;
+using EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EdFi.Admin.LearningStandards.CLI
 {
-    public class LearningStandardsCLIApplication : ILearningStandardsCLIApplicationBase
+    public class LearningStandardsCLICSVSyncApplication: ILearningStandardsCLIApplicationBase
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -26,22 +25,18 @@ namespace EdFi.Admin.LearningStandards.CLI
 
         private LearningStandardsCLIBaseOptions _options = new LearningStandardsCLIBaseOptions();
 
-        private ILearningStandardsSynchronizer _synchronizer;
+        private ILearningStandardsCsvSynchronizer _synchronizer;
 
-        private ILearningStandardsConfigurationValidator _validator;
+        private ILearningStandardsSyncFromCsvConfigurationValidator _validator;
 
-        private ILearningStandardsChangesAvailable _changesAvailable;
-
-        public LearningStandardsCLIApplication()
+        public LearningStandardsCLICSVSyncApplication()
         {
         }
 
-        internal LearningStandardsCLIApplication(Action<IServiceCollection> serviceSetup)
+        internal LearningStandardsCLICSVSyncApplication(Action<IServiceCollection> serviceSetup)
         {
             _serviceSetup = serviceSetup;
         }
-
-        public bool Unattended => _options.Unattended;
 
         public LearningStandardsCLIWriter CliWriter { get; set; }
 
@@ -57,23 +52,11 @@ namespace EdFi.Admin.LearningStandards.CLI
                     config.HelpWriter = Console.Out;
                 });
             int parseCode = parser
-                            .ParseArguments<LearningStandardsCLISyncOptions,
-                                LearningStandardsCLIValidateOptions,
-                                LearningStandardsCLIChangesOptions>(args)
+                            .ParseArguments<LearningStandardsCLISyncFromCSVOptions>(args)
                             .MapResult(
-                                (LearningStandardsCLISyncOptions syncOptions) =>
+                                syncFromCsvOptions =>
                                 {
-                                    _options = syncOptions;
-                                    return 0;
-                                },
-                                (LearningStandardsCLIValidateOptions validateOptions) =>
-                                {
-                                    _options = validateOptions;
-                                    return 0;
-                                },
-                                (LearningStandardsCLIChangesOptions changeOptions) =>
-                                {
-                                    _options = changeOptions;
+                                    _options = syncFromCsvOptions;
                                     return 0;
                                 },
                                 errs => 1);
@@ -87,11 +70,11 @@ namespace EdFi.Admin.LearningStandards.CLI
             // Add and setup application services and configuration settings.
             SetupApplicationServices();
 
-            //Validate both AB provider options and Ed-Fi ODS options
+            //Validate Ed-Fi ODS options
             var validationResults = await ValidateConfiguration().ConfigureAwait(false);
 
-            //When validating, a success message will output to the console by default.
-            //If there are validation errors, return
+            // When validating, a success message will output to the console by default.
+            // If there are validation errors, return
             if (!validationResults.IsSuccess)
             {
                 CliWriter.Error(validationResults.ToString());
@@ -105,66 +88,33 @@ namespace EdFi.Admin.LearningStandards.CLI
                     {
                         return validationResults;
                     }
-                //Changes summary only
-                case LearningStandardsCLIChangesOptions changesOptions:
-                    {
-                        return await RetrieveChangeSummary(changesOptions).ConfigureAwait(false);
-                    }
                 default:
                     {
-                        return await ExecuteSync(_options as LearningStandardsCLISyncOptions).ConfigureAwait(false);
+                        return await ExecuteSync(_options as LearningStandardsCLISyncFromCSVOptions).ConfigureAwait(false);
                     }
             }
         }
 
+        public bool Unattended => _options.Unattended;
 
-        internal async Task<IResponse> RetrieveChangeSummary(LearningStandardsCLIChangesOptions changesOptions)
-        {
-            var changesResult = await _changesAvailable.ChangesAvailableAsync(
-                    changesOptions.ToEdFiOdsApiConfiguration(),
-                    changesOptions.ToAcademicBenchmarksAuthenticationConfiguration(),
-                    _cts.Token)
-                .ConfigureAwait(false);
-
-            if (changesOptions.OutputFormat.ToLower() == "json")
-            {
-                CliWriter.Json(changesResult);
-            }
-            else
-            {
-                if (!changesResult.IsSuccess)
-                {
-                    CliWriter.Error(
-                        $"[{(int)changesResult.StatusCode}] {changesResult.ErrorMessage}");
-                }
-                else
-                {
-                    CliWriter.Info(changesResult.Content);
-                }
-            }
-
-            return changesResult;
-        }
-
-        internal async Task<IResponse> ExecuteSync(LearningStandardsCLISyncOptions syncOptions)
+        internal async Task<IResponse> ExecuteSync(LearningStandardsCLISyncFromCSVOptions syncOptions)
         {
             _cts.Token.ThrowIfCancellationRequested();
             CliWriter.Info("Starting synchronization");
             var progress = new Progress<LearningStandardsSynchronizerProgressInfo>(Synchronizer_Progress);
-            var options = new LearningStandardsSynchronizationOptions
-                          {
-                              ForceFullSync = syncOptions?.ForceFullSync ?? false
-                          };
-
+            var options = new LearningStandardsSynchronizationFromCsvOptions
+            {
+                InputCsvFullPath = syncOptions.InputCsvFullPath,
+                ResourcesMetaDataUri = syncOptions.ResourcesMetaDataUri,
+                ForceMetaDataReload = syncOptions.ForceMetaDataReload
+            };
             var syncResponse = await _synchronizer.SynchronizeAsync(
                     // ReSharper disable once PossibleNullReferenceException
                     syncOptions.ToEdFiOdsApiConfiguration(),
-                    syncOptions
-                                                          .ToAcademicBenchmarksAuthenticationConfiguration(),
-                                                      options,
-                                                      _cts.Token,
-                                                      progress)
-                                                  .ConfigureAwait(false);
+                    options,
+                    _cts.Token,
+                    progress)
+                .ConfigureAwait(false);
 
             if (syncResponse.IsSuccess)
             {
@@ -183,11 +133,9 @@ namespace EdFi.Admin.LearningStandards.CLI
             _cts.Token.ThrowIfCancellationRequested();
             CliWriter.Info("Validating configuration");
 
-            var validationResponse = await _validator.ValidateConfigurationAsync(
-                    _options.ToAcademicBenchmarksAuthenticationConfiguration(),
+            var validationResponse = await _validator.ValidateEdFiOdsApiConfigurationAsync(
                     _options.ToEdFiOdsApiConfiguration())
                 .ConfigureAwait(false);
-
 
             if (validationResponse.IsSuccess)
             {
@@ -222,32 +170,13 @@ namespace EdFi.Admin.LearningStandards.CLI
 
             //Add learning standards services
             CliWriter.Verbose("Adding learning standard services");
-            services.AddLearningStandardsServices(_options.ToEdFiOdsApiClientConfiguration());
-
-            services.Configure<AcademicBenchmarksOptions>(
-                opts =>
-                {
-                    opts.AuthorizationWindowSeconds = _options.AcademicBenchmarksAuthorizationWindow;
-                    opts.Retries = _options.AcademicBenchmarksRetryLimit;
-                    if (!string.IsNullOrWhiteSpace(_options.AcademicBenchmarksProxyUrl))
-                    {
-                        opts.Url = _options.AcademicBenchmarksProxyUrl;
-                    }
-                });
-
-            services.AddSingleton(x => (ILearningStandardsProviderConfiguration)x.GetService(typeof(AcademicBenchmarksOptions)));
-            services.AddSingleton<IChangeSequencePersister, JsonFileChangeSequencePersister>();
-
-            services.Configure<JsonFileChangeSequencePersisterOptions>(opts =>
-            {
-                opts.FileName = _options.ChangeSequenceStorePath;
-            });
-
+            services.AddLearningStandardsSyncFromCsvSpecificServices(
+                _options.ToEdFiOdsApiClientConfiguration());
             _serviceSetup?.Invoke(services);
             var serviceProvider = services.BuildServiceProvider();
-            _validator = serviceProvider.GetRequiredService<ILearningStandardsConfigurationValidator>();
-            _synchronizer = serviceProvider.GetRequiredService<ILearningStandardsSynchronizer>();
-            _changesAvailable = serviceProvider.GetRequiredService<ILearningStandardsChangesAvailable>();
+            _validator = serviceProvider
+                .GetRequiredService<ILearningStandardsSyncFromCsvConfigurationValidator>();
+            _synchronizer = serviceProvider.GetRequiredService<ILearningStandardsCsvSynchronizer>();
         }
 
         private void Synchronizer_Progress(LearningStandardsSynchronizerProgressInfo e)
