@@ -52,14 +52,14 @@ namespace EdFi.Admin.LearningStandards.CLI
                     config.HelpWriter = Console.Out;
                 });
             int parseCode = parser
-                            .ParseArguments<LearningStandardsCLISyncFromCSVOptions>(args)
-                            .MapResult(
-                                syncFromCsvOptions =>
-                                {
-                                    _options = syncFromCsvOptions;
-                                    return 0;
-                                },
-                                errs => 1);
+                .ParseArguments<LearningStandardsCLISyncFromCSVOptions>(args)
+                .MapResult(
+                    syncFromCsvOptions =>
+                    {
+                        _options = syncFromCsvOptions;
+                        return 0;
+                    },
+                    errs => 1);
 
             if (parseCode > 0)
             {
@@ -73,26 +73,12 @@ namespace EdFi.Admin.LearningStandards.CLI
             //Validate Ed-Fi ODS options
             var validationResults = await ValidateConfiguration().ConfigureAwait(false);
 
-            // When validating, a success message will output to the console by default.
-            // If there are validation errors, return
-            if (!validationResults.IsSuccess)
-            {
-                CliWriter.Error(validationResults.ToString());
-                return validationResults;
-            }
+            if (validationResults.IsSuccess)
+                return await ExecuteSync(_options as LearningStandardsCLISyncFromCSVOptions)
+                    .ConfigureAwait(false);
 
-            switch (_options)
-            {
-                //Validation summary only
-                case LearningStandardsCLIValidateOptions _:
-                    {
-                        return validationResults;
-                    }
-                default:
-                    {
-                        return await ExecuteSync(_options as LearningStandardsCLISyncFromCSVOptions).ConfigureAwait(false);
-                    }
-            }
+            CliWriter.Error(validationResults.ToString());
+            return validationResults;
         }
 
         public bool Unattended => _options.Unattended;
@@ -109,7 +95,6 @@ namespace EdFi.Admin.LearningStandards.CLI
                 ForceMetaDataReload = syncOptions.ForceMetaDataReload
             };
             var syncResponse = await _synchronizer.SynchronizeAsync(
-                    // ReSharper disable once PossibleNullReferenceException
                     syncOptions.ToEdFiOdsApiConfiguration(),
                     options,
                     _cts.Token,

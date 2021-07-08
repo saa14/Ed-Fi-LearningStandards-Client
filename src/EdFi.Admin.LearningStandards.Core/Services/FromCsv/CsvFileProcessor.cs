@@ -18,7 +18,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         {
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("Unable to find input CSV file.");
+                throw new FileNotFoundException("Unable to find input CSV file.");
             }
 
             using var reader = new StreamReader(filePath);
