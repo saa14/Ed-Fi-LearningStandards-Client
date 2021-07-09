@@ -145,7 +145,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         }
 
         [Test]
-        public async Task Can_validate_ods_v2_success()
+        public async Task Can_validate_ods_v2_not_supported()
         {
             //Arrange
             IAuthenticationConfiguration authConfig = new AuthenticationConfiguration(OAuthKey, OAuthSecret);
@@ -161,58 +161,10 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             //Act
             var actual = await validator.ValidateEdFiOdsApiConfigurationAsync(odsApiConfig).ConfigureAwait(false);
 
-            //Assert
-            Assert.NotNull(actual);
-            Assert.AreEqual(true, actual.IsSuccess);
-            Assert.IsNotEmpty(actual.Content);
-            Console.WriteLine(actual.ToString());
-        }
-
-        [Test]
-        public async Task Can_validate_ods_v2_failure()
-        {
-            //Arrange
-            IAuthenticationConfiguration authConfig = new AuthenticationConfiguration(OAuthKey, OAuthSecret);
-            IEdFiOdsApiConfiguration odsApiConfig = new EdFiOdsApiConfiguration(
-                DefaultOdsUrl, EdFiOdsApiCompatibilityVersion.v2, authConfig);
-            var httpHandler = new MockJsonHttpMessageHandler()
-                .AddRouteResponse("authorize", HttpStatusCode.InternalServerError);
-            var clientConfiguration = new EdFiOdsApiClientConfiguration(0);
-            var pluginConnector = GetConfiguredTestConnector(httpHandler, clientConfiguration);
-            var validator = pluginConnector.LearningStandardsSyncFromCsvConfigurationValidator;
-
-            //Act
-            var actual = await validator.ValidateEdFiOdsApiConfigurationAsync(odsApiConfig).ConfigureAwait(false);
-
-            //Assert
+            //Assert 
             Assert.NotNull(actual);
             Assert.AreEqual(false, actual.IsSuccess);
             Assert.IsNotEmpty(actual.ErrorMessage);
-
-            Console.WriteLine(actual.ToString());
-        }
-
-        [Test]
-        public async Task Can_validate_ods_v2_url_failure()
-        {
-            //Arrange
-            IAuthenticationConfiguration authConfig = new AuthenticationConfiguration(OAuthKey, OAuthSecret);
-            IEdFiOdsApiConfiguration odsApiConfig = new EdFiOdsApiConfiguration(
-                "DEFAULTURL", EdFiOdsApiCompatibilityVersion.v2, authConfig);
-            var httpHandler = new MockJsonHttpMessageHandler()
-                .AddRouteResponse("authorize", HttpStatusCode.InternalServerError);
-            var clientConfiguration = new EdFiOdsApiClientConfiguration(0);
-            var pluginConnector = GetConfiguredTestConnector(httpHandler, clientConfiguration);
-            var validator = pluginConnector.LearningStandardsSyncFromCsvConfigurationValidator;
-
-            //Act
-            var actual = await validator.ValidateEdFiOdsApiConfigurationAsync(odsApiConfig).ConfigureAwait(false);
-
-            //Assert
-            Assert.NotNull(actual);
-            Assert.AreEqual(false, actual.IsSuccess);
-            Assert.IsNotEmpty(actual.ErrorMessage);
-
             Console.WriteLine(actual.ToString());
         }
 
@@ -279,8 +231,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
         private LearningStandardsCorePluginConnector GetConfiguredTestConnector(
             HttpMessageHandler httpMessageHandler,
-            EdFiOdsApiClientConfiguration edFiOdsApiClientConfiguration,
-            Action<AcademicBenchmarksOptions> configureAbOptions = null)
+            EdFiOdsApiClientConfiguration edFiOdsApiClientConfiguration)
         {
             IServiceCollection serviceCollection = new ServiceCollection();
 

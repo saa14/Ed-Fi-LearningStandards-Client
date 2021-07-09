@@ -28,16 +28,22 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             _logger = logger;
         }
 
-        public async Task<IResponse> ValidateEdFiOdsApiConfigurationAsync(IEdFiOdsApiConfiguration edFiOdsApiConfiguration)
+        public async Task<IResponse> ValidateEdFiOdsApiConfigurationAsync(
+            IEdFiOdsApiConfiguration edFiOdsApiConfiguration)
         {
             try
             {
+                if (!edFiOdsApiConfiguration.Version.Equals(EdFiOdsApiCompatibilityVersion.v3))
+                    throw new NotSupportedException(
+                        "Sync from csv operation is not supported on ODS API version 2. Only supported from version 3 onwards.");
+
                 string token = await _edFiOdsApiAuthTokenManagerFactory
                     .CreateEdFiOdsApiAuthTokenManager(edFiOdsApiConfiguration)
                     .GetTokenAsync()
                     .ConfigureAwait(false);
 
                 return new ResponseModel(true, string.Empty, token, HttpStatusCode.OK);
+
             }
             catch (Exception ex)
             {
