@@ -22,7 +22,6 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         private readonly ILogger<MetaDataRetriever> _logger;
         private readonly string _folder = ".//MetaData";
 
-
         public MetaDataRetriever(ILogger<MetaDataRetriever> logger)
         {
             _logger = logger;
@@ -47,9 +46,9 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             }
 
             string swaggerDocument = await LoadJsonString(metaDataUri);
-            dynamic resources = JObject.Parse(swaggerDocument);
-            var resourceDefinitions = resources.definitions;
-            var learningStandardsResourceDefinition = resources.definitions.edFi_learningStandard;
+            var resources = JObject.Parse(swaggerDocument);
+            var resourceDefinitions = resources["definitions"];
+            var learningStandardsResourceDefinition = resources["definitions"]["edFi_learningStandard"];
 
             _logger.LogInformation("Converting swagger meta data.");
             var learningStandardMetaData =
@@ -98,7 +97,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             return result;
         }
 
-        private IEnumerable<LearningStandardMetaData> ConvertToLearningStandardMetaData(JObject resourceJson, JObject fullResourceJson = null)
+        private IEnumerable<LearningStandardMetaData> ConvertToLearningStandardMetaData(JToken resourceJson, JToken fullResourceJson = null)
         {
             fullResourceJson ??= resourceJson;
             var requiredProperties = resourceJson["required"] != null

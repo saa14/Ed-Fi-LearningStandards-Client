@@ -59,6 +59,11 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 _odsApiAuthTokenManagerFactory.CreateEdFiOdsApiAuthTokenManager(odsApiConfiguration),
                 odsApiConfiguration);
 
+            if (string.IsNullOrEmpty(options.ResourcesMetaDataUri))
+            {
+                options.ResourcesMetaDataUri = SwaggerMetaDataUriHelper.GetUri(odsApiConfiguration);
+            }
+
             _logger.LogInformation("Synchronization process starting.");
             var processId = default(Guid);
             var results = new ConcurrentBag<IEnumerable<IResponse>>();
