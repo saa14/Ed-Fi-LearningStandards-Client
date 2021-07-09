@@ -19,7 +19,7 @@ namespace EdFi.Admin.LearningStandards.CLI
         [Option("csv-file-path", Required = true, HelpText = "Input CSV file path.")]
         public string InputCsvFullPath { get; set; }
 
-        [Option("resources-meta-data-uri", Required = true, HelpText = "Ed-Fi ODS resources meta data endpoint Uri.")]
+        [Option("resources-meta-data-uri", Required = false, HelpText = "Ed-Fi ODS resources meta data endpoint Uri.")]
         public string ResourcesMetaDataUri { get; set; }
 
         [Option("force-metadata-reload", Required = false, HelpText = "Instructs the CLI to force meta data reload.")]
