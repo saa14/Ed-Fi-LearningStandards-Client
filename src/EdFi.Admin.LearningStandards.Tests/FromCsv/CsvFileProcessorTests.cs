@@ -11,7 +11,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
     public class CsvFileProcessorTests
     {
         [Test]
-        public void ShouldThrowFileNotFound()
+        public void Will_throw_file_not_found_error()
         {
             //Arrange
             var csvFileProcessor = new CsvFileProcessor();
@@ -24,7 +24,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         }
 
         [Test]
-        public void ShouldReadCsvRowsAsDictionaries()
+        public void Will_read_and_convert_csv_row_as_dictionary_entry()
         {
             //Arrange
             var csvFileProcessor = new CsvFileProcessor();
@@ -43,5 +43,4 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         public static string GetAssemblyPath()
             => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
     }
-   
 }
