@@ -149,19 +149,6 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             if (string.IsNullOrWhiteSpace(rawValue))
                 return null;
 
-            Exception TypeConversionException(string expectedType, bool typeIsUnsupported = false)
-            {
-                var message = new StringBuilder();
-
-                message.Append(!string.IsNullOrWhiteSpace(node.SourceColumn)
-                    ? $"Column \"{node.SourceColumn}\" contains a value for property \"{node.Name}\" which cannot be "
-                    : $"Static value for property \"{node.Name}\" cannot be ");
-
-                message.Append($"converted to{(typeIsUnsupported ? " unsupported " : " ")}type \"{expectedType}\".");
-
-                return new Exception(message.ToString());
-            }
-
             switch (nodeMetadata.DataType)
             {
                 case "string":
@@ -171,15 +158,15 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 case "integer":
                     if (int.TryParse(rawValue, out int intValue))
                         return intValue;
-                    throw TypeConversionException(nodeMetadata.DataType);
+                    throw new TypeConversionException(node, nodeMetadata.DataType);
 
                 case "boolean":
                     if (bool.TryParse(rawValue, out bool boolValue))
                         return boolValue;
-                    throw TypeConversionException(nodeMetadata.DataType);
+                    throw new TypeConversionException(node, nodeMetadata.DataType);
 
                 default:
-                    throw TypeConversionException(nodeMetadata.DataType, typeIsUnsupported: true);
+                    throw new TypeConversionException(node, nodeMetadata.DataType, typeIsUnsupported: true);
             }
         }
     }
