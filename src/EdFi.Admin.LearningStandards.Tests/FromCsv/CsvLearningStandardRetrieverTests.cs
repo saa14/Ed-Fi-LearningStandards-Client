@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +40,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public async Task Will_return_expected_mapped_learning_standard_rows()
         {
+            //Arrange
             var options =
                 new LearningStandardsSynchronizationFromCsvOptions
                 {
@@ -48,10 +48,13 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                     InputCsvFullPath = Path.Combine(_folderPath, "test-data.csv"),
                     ResourcesMetaDataUri = _metadataUri
                 };
+
+            //Act
             var response =
                 await _csvLearningStandardsDataRetriever.GetLearningStandards(options, CancellationToken.None);
             var result = response.AsyncEntityEnumerable.GetAsyncEnumeratorAsync();
 
+            //Assert
             Assert.NotNull(result);
 
             while (result.Result.MoveNextAsync().Result)
@@ -70,6 +73,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public async Task Will_return_expected_mapped_learning_standard_rows_and_count()
         {
+            //Arrange
             var options =
                 new LearningStandardsSynchronizationFromCsvOptions
                 {
@@ -81,10 +85,13 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             const int expectedRecordsCount = 527;
             mockCsvFileProcessor.Setup(x => x.GetRows(It.IsAny<string>())).Returns(TestHelpers.GenerateDataRows(expectedRecordsCount));
             _csvLearningStandardsDataRetriever = new CsvLearningStandardsDataRetriever(_logger, _metaDataRetriever, mockCsvFileProcessor.Object, _dataMappingProcess);
+
+            //Act
             var response =
                 await _csvLearningStandardsDataRetriever.GetLearningStandards(options, CancellationToken.None);
             var result = response.AsyncEntityEnumerable.GetAsyncEnumeratorAsync();
 
+            //Assert
             Assert.NotNull(result);
             // Splitting 100 rows per batch. So for 527 rows, expecting 6 batches 
             const int expectedBatchCount = 6;
@@ -121,7 +128,5 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                     CancellationToken.None);
             });
         }
-
-       
     }
 }

@@ -15,6 +15,8 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 {
     public class DataMappingProcess : IDataMappingProcess
     {
+        private const string DefaultMappingsFilePath = ".//Mappings.json";
+
         public string DataMappingsFilePath { get; set; } 
 
         public JObject ApplyMap(IEnumerable<LearningStandardMetaData> learningStandardMetaData,
@@ -29,7 +31,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         {
             if (string.IsNullOrEmpty(DataMappingsFilePath))
             {
-                DataMappingsFilePath = ".//Mappings.json";
+                DataMappingsFilePath = DefaultMappingsFilePath;
             }
             if (File.Exists(DataMappingsFilePath))
             {
@@ -49,7 +51,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 var nodeMetadata = nodeMetadatas.Single(m => m.Name == node.Name);
 
 
-                if (nodeMetadata.DataType == "array")
+                if (nodeMetadata.DataType == DataTypes.ArrayType)
                 {
                     var arrayItemMetadata = nodeMetadata.Children.Single();
 
@@ -84,7 +86,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 
             foreach (var node in nodes)
             {
-                if (arrayItemMetadata.DataType == "array")
+                if (arrayItemMetadata.DataType == DataTypes.ArrayType)
                 {
                     var nestedArrayItemMetadata = arrayItemMetadata.Children.Single();
 
@@ -153,16 +155,16 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 
             switch (nodeMetadata.DataType)
             {
-                case "string":
-                case "date-time":
+                case DataTypes.StringType:
+                case DataTypes.DateTimeType:
                     return rawValue;
 
-                case "integer":
+                case DataTypes.IntegerType:
                     if (int.TryParse(rawValue, out int intValue))
                         return intValue;
                     throw new TypeConversionException(node, nodeMetadata.DataType);
 
-                case "boolean":
+                case DataTypes.BoolType:
                     if (bool.TryParse(rawValue, out bool boolValue))
                         return boolValue;
                     throw new TypeConversionException(node, nodeMetadata.DataType);

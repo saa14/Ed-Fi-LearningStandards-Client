@@ -21,6 +21,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         private readonly IMetaDataRetriever _metaDataRetriever;
         private readonly ICsvFileProcessor _csvFileProcessor;
         private readonly IDataMappingProcess _dataMappingProcess;
+        private EventHandler<AsyncEnumerableOperationStatus> _processCount;
 
         public CsvLearningStandardsDataRetriever(
             ILogger<CsvLearningStandardsDataRetriever> logger,
@@ -33,13 +34,12 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             _csvFileProcessor = csvFileProcessor;
             _dataMappingProcess = dataMappingProcess;
         }
+        
         public event EventHandler<AsyncEnumerableOperationStatus> ProcessCountEvent
         {
             add => _processCount += value;
             remove => _processCount -= value;
         }
-
-        private EventHandler<AsyncEnumerableOperationStatus> _processCount;
 
         public async Task<AsyncEnumerableOperation<EdFiBulkJsonModel>> GetLearningStandards(
             ILearningStandardsSynchronizationFromCsvOptions options,

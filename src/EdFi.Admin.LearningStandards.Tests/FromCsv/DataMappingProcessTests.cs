@@ -15,6 +15,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_map_data_from_source_column()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("PropertyA", "string"),
                 Property("PropertyB", "string"),
@@ -28,7 +29,11 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             );
 
             var csvRow = new Dictionary<string, string> { { "Col1", "value1" }, { "Col2", "value2" }, { "Col3", "" } };
+
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
             Assert.AreEqual("value1", mappedData["PropertyA"].ToString());
             Assert.AreEqual("default value", mappedData["PropertyC"].ToString());
         }
@@ -36,6 +41,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_map_known_data_type_successfully()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("PropertyA", "string"),
                 Property("PropertyB", "date-time"),
@@ -52,7 +58,10 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
             var csvRow = new Dictionary<string, string> { { "Col1", "ABC123" }, { "Col2", "2016-08-01" }, { "Col3", "123" }, { "Col4", "true" } };
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
             Assert.AreEqual("ABC123", mappedData["PropertyA"].ToString());
             Assert.AreEqual("2016-08-01", mappedData["PropertyB"].ToString());
             Assert.AreEqual("123", mappedData["PropertyC"].ToString());
@@ -62,6 +71,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_throw_error_for_mismatch_data_type()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("PropertyA", "string"),
                 Property("PropertyB", "date-time"),
@@ -78,6 +88,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
             var csvRow = new Dictionary<string, string> { { "Col1", "ABC123" }, { "Col2", "2016-08-01" }, { "Col3", "wrong-value" }, { "Col4", "true" } };
 
+            //Act -> Assert
             Assert.Throws<TypeConversionException>(() =>
             {
                 _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
@@ -87,6 +98,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_throw_error_for_unsupported_data_type()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("PropertyA", "number")
             );
@@ -97,6 +109,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
             var csvRow = new Dictionary<string, string> { { "Col1", "123.4" }};
 
+            //Act -> Assert
             Assert.Throws<TypeConversionException>(() =>
             {
                _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
@@ -106,6 +119,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_throw_error_for_missing_required_column()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("PropertyName", "string")
             );
@@ -116,6 +130,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
             var csvRow = new Dictionary<string, string> { { "Col1", "value1" } };
 
+            //Act -> Assert
             Assert.Throws<Exception>(() =>
             {
                _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
@@ -125,6 +140,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_map_array_of_objects()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Array(
                     "arrayProperty",
@@ -140,7 +156,10 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 
             var csvRow = new Dictionary<string, string> { { "Col1", "value1" }, { "Col2", "value2" } };
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
             Assert.NotNull(mappedData);
             Assert.AreEqual(2, mappedData["arrayProperty"].Count());
             Assert.AreEqual("value1", mappedData["arrayProperty"][0]["title"].ToString());
@@ -150,6 +169,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_map_nested_objects()
         {
+            //Arrange
             var resourceMetadata = Metadata(Object("Parent", "Parent",
                 Object("ChildObject", "ChildObject",
                     Object("GrandchildObject", "GrandchildObject",
@@ -185,7 +205,10 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             var csvRow = new Dictionary<string, string>
                 { { "Col1", "value1" }, { "Col2", "value2" }, { "Col3", "value3" }, { "Col4", "value4" } };
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
             Assert.NotNull(mappedData);
             Assert.AreEqual("value1",
                 mappedData["Parent"]["ChildObject"]["GrandchildObject"]["GreatGrandchildObject"][
@@ -197,6 +220,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_handle_missing_values_while_mapping_properties()
         {
+            //Arrange
             var csvRow = new Dictionary<string, string>
             {
                 { "EmptyColumn", "" },
@@ -225,9 +249,11 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 MapColumn("PopulatedColumn_Empty", "PopulatedColumn", @default: "")
             );
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
-            Assert.NotNull(mappedData);
 
+            //Assert
+            Assert.NotNull(mappedData);
             // Ignore property with null or empty value
             Assert.IsNull(mappedData["EmptyColumn_Null"]);
             Assert.IsNull(mappedData["EmptyColumn_Empty"]);
@@ -239,6 +265,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_handle_unmapped_properties()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Property("mappedProperty", "string"),
                 Property("unmappedProperty1", "string"),
@@ -256,9 +283,11 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             var csvRow = new Dictionary<string, string>
                 { { "Col1", "mappedValue" }, { "Col2", "value2" }, { "Col3", "value3" }, { "Col4", "value4" } };
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
-            Assert.NotNull(mappedData);
 
+            //Assert
+            Assert.NotNull(mappedData);
             // Ignore unmapped properties
             Assert.IsNull(mappedData["unmappedProperty1"]);
             Assert.IsNull(mappedData["unmappedProperty2"]);
@@ -269,6 +298,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public void Will_map_nested_resources()
         {
+            //Arrange
             var resourceMetadata = Metadata(
                 Object("resource1Reference", "resource1Reference",
                     Property("resource1Id", "integer")),
@@ -298,7 +328,10 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 { "Descriptor", "Descriptor#Value" }
             };
 
+            //Act
             var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
             Assert.NotNull(mappedData);
             Assert.AreEqual("123",
                 mappedData["resource1Reference"]["resource1Id"].ToString());
@@ -308,6 +341,55 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 mappedData["entryDate"].ToString());
             Assert.AreEqual("Descriptor#Value",
                 mappedData["resourceDescriptor"].ToString());
+        }
+
+        [Test]
+        public void Will_map_required_properties()
+        {
+            //Arrange
+            var resourceMetadata = Metadata(
+                RequiredProperty("requiredProperty1", "string"),
+                Property("property1", "string"),
+                Property("property2", "string"),
+                RequiredProperty("requiredProperty2", "string"),
+                Array(
+                    "arrayProperty",
+                    Object("arrayItem", "arrayItemType", Property("title", "string"))
+                ),
+                Object("resource2Reference", "resource2Reference",
+                    Property("resource2Id", "string")),
+
+                RequiredProperty("requiredProperty3", "string")
+            );
+
+            //Map only required properties.
+            var jsonMap = JsonMap(
+                MapColumn("requiredProperty1", "RequiredColumn1"),
+                MapColumn("requiredProperty2", "RequiredColumn2"),
+                MapColumn("requiredProperty3", "RequiredColumn3")
+            );
+
+            var csvRow = new Dictionary<string, string>
+            {
+                { "RequiredColumn1", "123" }, { "RequiredColumn2", "Descriptor#Value" }, {"RequiredColumn3","rv3"}
+            };
+
+            //Act
+            var mappedData = _mapper.ApplyMap(resourceMetadata, jsonMap, csvRow);
+
+            //Assert
+            Assert.NotNull(mappedData);
+
+            Assert.IsNull(mappedData["property1"]);
+            Assert.IsNull(mappedData["property2"]);
+            Assert.IsNull(mappedData["arrayProperty"]);
+
+            Assert.AreEqual("123",
+                mappedData["requiredProperty1"].ToString());
+            Assert.AreEqual("Descriptor#Value",
+                mappedData["requiredProperty2"].ToString());
+            Assert.AreEqual("rv3",
+                mappedData["requiredProperty3"].ToString());
         }
 
         public static DataMapper Unmapped(string name)
@@ -350,7 +432,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             return new LearningStandardMetaData
             {
                 Name = name,
-                DataType = "array",
+                DataType = DataTypes.ArrayType,
                 Children = new List<LearningStandardMetaData> { itemMetadata }
             };
         }

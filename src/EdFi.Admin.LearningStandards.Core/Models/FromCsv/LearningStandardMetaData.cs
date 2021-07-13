@@ -21,7 +21,7 @@ namespace EdFi.Admin.LearningStandards.Core.Models.FromCsv
             return new DataMapper
             {
                 Name = Name,
-                Children = DataType == "array"
+                Children = DataType == DataTypes.ArrayType
                     ? new List<DataMapper>()
                     : Children.Select(x => x.BuildInitialMappings()).ToList()
             };

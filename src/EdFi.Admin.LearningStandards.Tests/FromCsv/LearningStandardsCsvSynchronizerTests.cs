@@ -58,6 +58,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
         [Test]
         public async Task Will_return_expected_progress_percentages()
         {
+            //Arrange
             var options =
                 new LearningStandardsSynchronizationFromCsvOptions
                 {
@@ -96,9 +97,12 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 new LearningStandardsCsvSynchronizer(odsApiClientConfiguration, edfiOdsTokenManagerFactory, edFiBulkJsonPersister,
                     _debugLogger, _csvLearningStandardsDataRetriever);
             var prog = new TestProgress(_loggerFactory);
+
+            //Act
             var res = await learningStandardsCsvSynchronizer.SynchronizeAsync(odsApiConfiguration, options,
                 CancellationToken.None, prog);
 
+            //Assert
             Assert.IsNotNull(res);
             Assert.AreEqual(0, prog.PercentageUpdates.First());
             Assert.AreEqual(100, prog.PercentageUpdates.Last());

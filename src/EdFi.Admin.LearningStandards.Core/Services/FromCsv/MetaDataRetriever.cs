@@ -21,7 +21,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         private readonly ILogger<MetaDataRetriever> _logger;
         private readonly ISwaggerDocumentRetriever _swaggerDocumentRetriever;
 
-        private string Folder { get; set; }
+        private string _folder = ".//MetaData";
 
         public MetaDataRetriever(ILogger<MetaDataRetriever> logger, ISwaggerDocumentRetriever swaggerDocumentRetriever)
         {
@@ -44,9 +44,9 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             _logger.LogInformation("Converting swagger meta data.");
             var learningStandardMetaData =
                 ConvertToLearningStandardMetaData(learningStandardsResourceDefinition, resourceDefinitions);
-            if (!Directory.Exists(Folder))
+            if (!Directory.Exists(_folder))
             {
-                Directory.CreateDirectory(Folder);
+                Directory.CreateDirectory(_folder);
             }
 
             _logger.LogInformation("Writing to metadata.json file.");
@@ -58,13 +58,16 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             }
         }
 
-        private string Filename => Path.Combine(Folder, "metadata.json");
+        private string Filename => Path.Combine(_folder, "metadata.json");
 
         private bool MetadataExists => File.Exists(Filename);
 
         public async Task<IEnumerable<LearningStandardMetaData>> GetMetadata(string metaDataUri, bool forceReload, string folder = null)
         {
-            Folder = string.IsNullOrEmpty(folder) ? ".//MetaData" : folder;
+            if (!string.IsNullOrEmpty(folder))
+            {
+                _folder = folder;
+            }
 
             if (!MetadataExists || forceReload)
             {
@@ -121,7 +124,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                         ? GetReferenceName(detail["$ref"])
                         : detail["type"].ToString();
 
-                    if (field.DataType == "array")
+                    if (field.DataType == DataTypes.ArrayType)
                     {
                         string subModel = GetReferenceName(detail["items"]["$ref"]);
                         var subModelJson = fullResourceJson[subModel];
