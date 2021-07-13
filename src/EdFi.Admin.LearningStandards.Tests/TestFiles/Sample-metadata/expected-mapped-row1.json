@@ -1,0 +1,16 @@
+{
+    "academicSubjects": [ { "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science" } ],
+    "gradeLevels": [ { "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade" } ],
+    "learningStandardId": "LearningStandardId-test-1",
+    "contentStandard": {
+        "publicationStatusDescriptor": "uri://ed-fi.org/PublicationStatusDescriptor#Deprecated",
+        "publicationYear": 2018,
+        "title": "Test-Career Technology Education",
+        "authors": [ { "author": "Test1 County" } ]
+    },
+    "courseTitle": "Architecture and Construction",
+    "description": "description1",
+    "learningStandardItemCode": "8",
+    "namespace": "uri://ed-fi.org/LearningStandards",
+    "uri": "uri://ed-fi.org/LearningStandards/LearningStandardId-test-1"
+}

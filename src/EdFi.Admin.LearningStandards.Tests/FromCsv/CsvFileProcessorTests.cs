@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using EdFi.Admin.LearningStandards.Core.Services.FromCsv;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 {
@@ -19,7 +20,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             //Assert -> Act
             Assert.Throws<FileNotFoundException>( () =>
             {
-                var data = csvFileProcessor.GetRows(Path.Combine(GetAssemblyPath(), "TestFiles/no-file.csv")).ToList();
+                var data = csvFileProcessor.GetRows(Path.Combine(GetAssemblyPath(), "TestFiles/Sample-metadata/no-file.csv")).ToList();
             });
         }
 
@@ -30,7 +31,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             var csvFileProcessor = new CsvFileProcessor();
 
             //Act
-            var data = csvFileProcessor.GetRows(Path.Combine(GetAssemblyPath(), "TestFiles/test-data.csv")).ToList();
+            var data = csvFileProcessor.GetRows(Path.Combine(GetAssemblyPath(), "TestFiles/Sample-metadata/test-data.csv")).ToList();
 
             //Assert
             Assert.AreEqual(2, data.Count);

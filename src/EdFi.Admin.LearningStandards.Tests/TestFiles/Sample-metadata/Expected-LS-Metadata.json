@@ -1,0 +1,250 @@
+[
+    {
+        "Name": "academicSubjects",
+        "DataType": "array",
+        "Required": true,
+        "Children": [
+            {
+                "Name": "learningStandardAcademicSubject",
+                "DataType": "edFi_learningStandardAcademicSubject",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "academicSubjectDescriptor",
+                        "DataType": "string",
+                        "Required": true,
+                        "Children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "gradeLevels",
+        "DataType": "array",
+        "Required": true,
+        "Children": [
+            {
+                "Name": "learningStandardGradeLevel",
+                "DataType": "edFi_learningStandardGradeLevel",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "gradeLevelDescriptor",
+                        "DataType": "string",
+                        "Required": true,
+                        "Children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "learningStandardId",
+        "DataType": "string",
+        "Required": true,
+        "Children": []
+    },
+    {
+        "Name": "parentLearningStandardReference",
+        "DataType": "edFi_learningStandardReference",
+        "Required": false,
+        "Children": [
+            {
+                "Name": "learningStandardId",
+                "DataType": "string",
+                "Required": true,
+                "Children": []
+            }
+        ]
+    },
+    {
+        "Name": "contentStandard",
+        "DataType": "edFi_learningStandardContentStandard",
+        "Required": false,
+        "Children": [
+            {
+                "Name": "publicationStatusDescriptor",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "beginDate",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "endDate",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "publicationDate",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "publicationYear",
+                "DataType": "integer",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "title",
+                "DataType": "string",
+                "Required": true,
+                "Children": []
+            },
+            {
+                "Name": "uri",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "version",
+                "DataType": "string",
+                "Required": false,
+                "Children": []
+            },
+            {
+                "Name": "mandatingEducationOrganizationReference",
+                "DataType": "edFi_educationOrganizationReference",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "educationOrganizationId",
+                        "DataType": "integer",
+                        "Required": true,
+                        "Children": []
+                    }
+                ]
+            },
+            {
+                "Name": "authors",
+                "DataType": "array",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "learningStandardContentStandardAuthor",
+                        "DataType": "edFi_learningStandardContentStandardAuthor",
+                        "Required": false,
+                        "Children": [
+                            {
+                                "Name": "author",
+                                "DataType": "string",
+                                "Required": true,
+                                "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "courseTitle",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    },
+    {
+        "Name": "description",
+        "DataType": "string",
+        "Required": true,
+        "Children": []
+    },
+    {
+        "Name": "identificationCodes",
+        "DataType": "array",
+        "Required": false,
+        "Children": [
+            {
+                "Name": "learningStandardIdentificationCode",
+                "DataType": "edFi_learningStandardIdentificationCode",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "contentStandardName",
+                        "DataType": "string",
+                        "Required": true,
+                        "Children": []
+                    },
+                    {
+                        "Name": "identificationCode",
+                        "DataType": "string",
+                        "Required": true,
+                        "Children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "learningStandardCategoryDescriptor",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    },
+    {
+        "Name": "learningStandardItemCode",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    },
+    {
+        "Name": "learningStandardScopeDescriptor",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    },
+    {
+        "Name": "namespace",
+        "DataType": "string",
+        "Required": true,
+        "Children": []
+    },
+    {
+        "Name": "prerequisiteLearningStandards",
+        "DataType": "array",
+        "Required": false,
+        "Children": [
+            {
+                "Name": "learningStandardPrerequisiteLearningStandard",
+                "DataType": "edFi_learningStandardPrerequisiteLearningStandard",
+                "Required": false,
+                "Children": [
+                    {
+                        "Name": "prerequisiteLearningStandardReference",
+                        "DataType": "edFi_learningStandardReference",
+                        "Required": true,
+                        "Children": [
+                            {
+                                "Name": "learningStandardId",
+                                "DataType": "string",
+                                "Required": true,
+                                "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "successCriteria",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    },
+    {
+        "Name": "uri",
+        "DataType": "string",
+        "Required": false,
+        "Children": []
+    }
+]
