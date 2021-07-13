@@ -3,11 +3,10 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-using System;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using EdFi.Admin.LearningStandards.Core.Models.FromCsv;
 using EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv;
@@ -20,22 +19,14 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
     public class MetaDataRetriever : IMetaDataRetriever
     {
         private readonly ILogger<MetaDataRetriever> _logger;
-        private readonly string _folder = ".//MetaData";
+        private readonly ISwaggerDocumentRetriever _swaggerDocumentRetriever;
 
-        public MetaDataRetriever(ILogger<MetaDataRetriever> logger)
+        private string Folder { get; set; }
+
+        public MetaDataRetriever(ILogger<MetaDataRetriever> logger, ISwaggerDocumentRetriever swaggerDocumentRetriever)
         {
             _logger = logger;
-        }
-
-        private async Task<string> LoadJsonString(string metaDataUri)
-        {
-            string swaggerDocument;
-            using var webClient = new WebClient();
-            {
-                _logger.LogInformation($"Loading swagger document from {metaDataUri}.");
-                swaggerDocument = await webClient.DownloadStringTaskAsync(new Uri(metaDataUri));
-            }
-            return swaggerDocument;
+            _swaggerDocumentRetriever = swaggerDocumentRetriever;
         }
 
         public async Task LoadMetaData(string metaDataUri)
@@ -45,7 +36,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 File.Delete(Filename);
             }
 
-            string swaggerDocument = await LoadJsonString(metaDataUri);
+            string swaggerDocument = await _swaggerDocumentRetriever.LoadJsonString(metaDataUri);
             var resources = JObject.Parse(swaggerDocument);
             var resourceDefinitions = resources["definitions"];
             var learningStandardsResourceDefinition = resources["definitions"]["edFi_learningStandard"];
@@ -53,9 +44,9 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             _logger.LogInformation("Converting swagger meta data.");
             var learningStandardMetaData =
                 ConvertToLearningStandardMetaData(learningStandardsResourceDefinition, resourceDefinitions);
-            if (!Directory.Exists(_folder))
+            if (!Directory.Exists(Folder))
             {
-                Directory.CreateDirectory(_folder);
+                Directory.CreateDirectory(Folder);
             }
 
             _logger.LogInformation("Writing to metadata.json file.");
@@ -64,12 +55,14 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 .ConfigureAwait(false);
         }
 
-        private string Filename => Path.Combine(_folder, "metadata.json");
+        private string Filename => Path.Combine(Folder, "metadata.json");
 
         private bool MetadataExists => File.Exists(Filename);
 
-        public async Task<IEnumerable<LearningStandardMetaData>> GetMetadata(string metaDataUri, bool forceReload)
+        public async Task<IEnumerable<LearningStandardMetaData>> GetMetadata(string metaDataUri, bool forceReload, string folder = null)
         {
+            Folder = string.IsNullOrEmpty(folder) ? ".//MetaData" : folder;
+
             if (!MetadataExists || forceReload)
             {
                 await LoadMetaData(metaDataUri).ConfigureAwait(false);

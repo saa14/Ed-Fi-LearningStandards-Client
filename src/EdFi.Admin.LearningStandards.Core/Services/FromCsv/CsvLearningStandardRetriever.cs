@@ -58,7 +58,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             var dataMappers = _dataMappingProcess.GetDataMappings().ToArray();
 
             int startPosition = 0;
-            const int recordsToFetch = 2;
+            const int recordsToFetch = 100;
             int totalRecords = inputRows.Count();
             var processingId = Guid.NewGuid();
 

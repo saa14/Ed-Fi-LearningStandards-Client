@@ -11,6 +11,6 @@ namespace EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv
 {
     public interface IMetaDataRetriever
     {
-        Task<IEnumerable<LearningStandardMetaData>> GetMetadata(string metaDataUri, bool forceReload);
+        Task<IEnumerable<LearningStandardMetaData>> GetMetadata(string metaDataUri, bool forceReload, string folder = null);
     }
 }

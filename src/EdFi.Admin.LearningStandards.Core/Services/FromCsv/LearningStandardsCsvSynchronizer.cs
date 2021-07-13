@@ -25,7 +25,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 
         private readonly ConcurrentDictionary<Guid, int> _countsByProcessId = new ConcurrentDictionary<Guid, int>();
 
-        private readonly ILogger<LearningStandardsSynchronizer> _logger;
+        private readonly ILogger<LearningStandardsCsvSynchronizer> _logger;
         private readonly ILearningStandardsCsvDataRetriever _learningStandardsCsvDataRetriever;
 
         private readonly IEdFiOdsApiAuthTokenManagerFactory _odsApiAuthTokenManagerFactory;
@@ -36,7 +36,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             IEdFiOdsApiClientConfiguration odsApiClientConfiguration,
             IEdFiOdsApiAuthTokenManagerFactory odsApiAuthTokenManagerFactory,
             IEdFiBulkJsonPersisterFactory bulkJsonPersisterFactory,
-            ILogger<LearningStandardsSynchronizer> logger,
+            ILogger<LearningStandardsCsvSynchronizer> logger,
             ILearningStandardsCsvDataRetriever learningStandardsCsvDataRetriever)
         {
             _odsApiClientConfiguration = odsApiClientConfiguration;

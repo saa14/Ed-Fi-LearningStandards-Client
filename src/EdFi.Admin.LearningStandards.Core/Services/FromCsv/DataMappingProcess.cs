@@ -3,11 +3,9 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using EdFi.Admin.LearningStandards.Core.Models.FromCsv;
 using EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv;
 using Newtonsoft.Json;
@@ -17,7 +15,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 {
     public class DataMappingProcess : IDataMappingProcess
     {
-        private readonly string DataMappingsFilePath = ".//Mappings.json";
+        public string DataMappingsFilePath { get; set; } 
 
         public JObject ApplyMap(IEnumerable<LearningStandardMetaData> learningStandardMetaData,
             IEnumerable<DataMapper> dataMappers, Dictionary<string, string> csvRow)
@@ -29,6 +27,10 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
 
         public IEnumerable<DataMapper> GetDataMappings()
         {
+            if (string.IsNullOrEmpty(DataMappingsFilePath))
+            {
+                DataMappingsFilePath = ".//Mappings.json";
+            }
             if (File.Exists(DataMappingsFilePath))
             {
                return JsonConvert.DeserializeObject<List<DataMapper>>(File.ReadAllText(DataMappingsFilePath));

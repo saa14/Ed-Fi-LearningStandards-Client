@@ -75,6 +75,7 @@ namespace EdFi.Admin.LearningStandards.Core.Installers
             services.InstallLearningStandardsEdFiHttpClients();
 
             // CSV data reading and mapping services:
+            services.AddSingleton<ISwaggerDocumentRetriever, SwaggerDocumentRetriever>();
             services.AddSingleton<IMetaDataRetriever, MetaDataRetriever>();
             services.AddSingleton<ICsvFileProcessor, CsvFileProcessor>();
             services.AddSingleton<IDataMappingProcess, DataMappingProcess>();
