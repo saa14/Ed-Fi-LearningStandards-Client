@@ -67,6 +67,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             _logger.LogInformation("Synchronization process starting.");
             var processId = default(Guid);
             var results = new ConcurrentBag<IEnumerable<IResponse>>();
+            progress?.Report(new LearningStandardsSynchronizerProgressInfo("Synchronization", "Starting", 0));
             int recordCounter = 0;
 
             try
