@@ -3,7 +3,6 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,16 +20,20 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 throw new FileNotFoundException("Unable to find input CSV file.");
             }
 
-            using var reader = new StreamReader(filePath);
-            using var csvReader = new CsvReader(reader);
-            csvReader.Read();
-            csvReader.ReadHeader();
+            using (var reader = new StreamReader(filePath))
+            {
+                using (var csvReader = new CsvReader(reader))
+                {
+                    csvReader.Read();
+                    csvReader.ReadHeader();
 
-            var headers = csvReader.Context.HeaderRecord;
+                    var headers = csvReader.Context.HeaderRecord;
 
-            while (csvReader.Read())
-                yield return headers.ToDictionary(singleHeader => singleHeader,
-                    singleHeader => csvReader[(string) singleHeader]);
+                    while (csvReader.Read())
+                        yield return headers.ToDictionary(singleHeader => singleHeader,
+                            singleHeader => csvReader[(string) singleHeader]);
+                }
+            }
         }
     }
 }

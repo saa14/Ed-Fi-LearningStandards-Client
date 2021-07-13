@@ -50,9 +50,12 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             }
 
             _logger.LogInformation("Writing to metadata.json file.");
-            using var writer = new StreamWriter(Filename);
-            await writer.WriteLineAsync(JsonConvert.SerializeObject(learningStandardMetaData, Formatting.None))
-                .ConfigureAwait(false);
+            using (var writer = new StreamWriter(Filename))
+            {
+                await writer
+                    .WriteLineAsync(JsonConvert.SerializeObject(learningStandardMetaData, Formatting.None))
+                    .ConfigureAwait(false);
+            }
         }
 
         private string Filename => Path.Combine(Folder, "metadata.json");
@@ -80,19 +83,24 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
                 return result;
             }
             _logger.LogInformation("Reading metadata.json file.");
-            using var reader = new StreamReader(Filename);
+            using (var reader = new StreamReader(Filename))
+            {
 
-            string resourceMetadata = await reader.ReadToEndAsync()
-                .ConfigureAwait(false);
-            var properties = JsonConvert.DeserializeObject<LearningStandardMetaData[]>(resourceMetadata);
-            result.AddRange(properties);
-            reader.Close();
+                string resourceMetadata = await reader.ReadToEndAsync()
+                    .ConfigureAwait(false);
+                var properties = JsonConvert.DeserializeObject<LearningStandardMetaData[]>(resourceMetadata);
+                result.AddRange(properties);
+                reader.Close();
+            }
             return result;
         }
 
         private IEnumerable<LearningStandardMetaData> ConvertToLearningStandardMetaData(JToken resourceJson, JToken fullResourceJson = null)
         {
-            fullResourceJson ??= resourceJson;
+            if (fullResourceJson == null)
+            {
+                fullResourceJson = resourceJson;
+            }
             var requiredProperties = resourceJson["required"] != null
                 ? resourceJson["required"].Select(x => x.ToString()).ToArray()
                 : new string[0];

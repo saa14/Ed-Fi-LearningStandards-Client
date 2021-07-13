@@ -18,7 +18,7 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
         public async Task<string> LoadJsonString(string metaDataUri)
         {
             string swaggerDocument;
-            using var webClient = new WebClient();
+            using (var webClient = new WebClient())
             {
                 _logger.LogInformation($"Loading swagger document from {metaDataUri}.");
                 swaggerDocument = await webClient.DownloadStringTaskAsync(new Uri(metaDataUri));
