@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using EdFi.Admin.LearningStandards.Core.Services.FromCsv;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace EdFi.Admin.LearningStandards.Tests.FromCsv
 {
@@ -37,8 +36,22 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             Assert.AreEqual(2, data.Count);
             var row1 = data[0];
             var row2 = data[1];
-            Assert.AreEqual("LearningStandardId-test-1", row1["LearningStandardId"]);
+            Assert.AreEqual("LSCSVId-1234", row1["LearningStandardId"]);
             Assert.AreEqual("description2", row2["Description"]);
+        }
+
+        [Test]
+        public void Will_have_invalid_rows_exception_items()
+        {
+            //Arrange
+            var csvFileProcessor = new CsvFileProcessor();
+
+            //Act
+            var data = csvFileProcessor.GetRows(Path.Combine(GetAssemblyPath(), "TestFiles/Sample-metadata/test-invalid-rows.csv")).ToList();
+
+            //Assert
+            Assert.AreEqual(1, csvFileProcessor.InvalidRowsExceptions.Count);
+            Assert.AreEqual("Field is missing on row number 2", csvFileProcessor.InvalidRowsExceptions.First().Message);
         }
 
         public static string GetAssemblyPath()

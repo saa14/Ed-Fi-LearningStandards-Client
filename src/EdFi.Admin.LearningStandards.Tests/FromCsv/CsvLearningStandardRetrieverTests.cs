@@ -65,8 +65,8 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 Assert.IsNotNull(actual.Resource);
                 Assert.IsNotNull(actual.Data);
                 Assert.AreEqual(2, actual.Data.Count);
-                Assert.AreEqual("LearningStandardId-test-1", actual.Data[0]["learningStandardId"].ToString());
-                Assert.AreEqual("LearningStandardId-test-2", actual.Data[1]["learningStandardId"].ToString());
+                Assert.AreEqual("LSCSVId-1234", actual.Data[0]["learningStandardId"].ToString());
+                Assert.AreEqual("LSCSVId-5678", actual.Data[1]["learningStandardId"].ToString());
             }
         }
 
@@ -127,6 +127,23 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
                 await _csvLearningStandardsDataRetriever.GetLearningStandards(options,
                     CancellationToken.None);
             });
+        }
+
+        [Test]
+        public void Will_throw_error_with_invalid_rows()
+        {
+            var options =
+                new LearningStandardsSynchronizationFromCsvOptions
+                {
+                    ForceMetaDataReload = false,
+                    InputCsvFullPath = Path.Combine(_folderPath, "test-invalid-rows.csv"),
+                    ResourcesMetaDataUri = _metadataUri
+                };
+            Assert.ThrowsAsync<Exception>(async () =>
+            {
+                await _csvLearningStandardsDataRetriever.GetLearningStandards(options,
+                    CancellationToken.None);
+            }, "Invalid rows found on file: {options.InputCsvFullPath}. Invalid rows details: Field is missing on row number 2");
         }
     }
 }

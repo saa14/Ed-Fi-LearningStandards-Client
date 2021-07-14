@@ -44,6 +44,9 @@
     <None Update="TestFiles\Sample-metadata\Swagger-Document-3.x.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestFiles\Sample-metadata\test-invalid-rows.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\Sample-metadata\test-no-data.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

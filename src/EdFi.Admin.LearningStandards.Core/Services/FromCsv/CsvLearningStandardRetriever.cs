@@ -7,6 +7,7 @@ using System;
 using System.Collections.Async;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EdFi.Admin.LearningStandards.Core.Services.Interfaces.FromCsv;
@@ -45,7 +46,19 @@ namespace EdFi.Admin.LearningStandards.Core.Services.FromCsv
             ILearningStandardsSynchronizationFromCsvOptions options,
             CancellationToken cancellationToken = default)
         {
-            var inputRows = _csvFileProcessor.GetRows(options.InputCsvFullPath);
+            var inputRows = _csvFileProcessor.GetRows(options.InputCsvFullPath).ToList();
+            var invalidRowsExceptions = _csvFileProcessor.InvalidRowsExceptions;
+            if (invalidRowsExceptions != null && invalidRowsExceptions.Any())
+            {
+                var sb = new StringBuilder();
+                sb.Append($"Invalid rows found on file: {options.InputCsvFullPath}. Invalid rows details: ");
+                foreach (var innerException in invalidRowsExceptions)
+                {
+                    sb.Append(innerException.Message + ",");
+                }
+                throw new Exception(sb.ToString());
+            }
+
             if (inputRows == null || !inputRows.Any())
             {
                 string error = $"No records to process, file: {options.InputCsvFullPath}";
