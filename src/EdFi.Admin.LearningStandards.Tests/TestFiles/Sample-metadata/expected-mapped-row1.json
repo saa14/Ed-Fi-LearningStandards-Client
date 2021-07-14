@@ -1,16 +1,16 @@
 {
     "academicSubjects": [ { "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science" } ],
     "gradeLevels": [ { "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade" } ],
-    "learningStandardId": "LearningStandardId-test-1",
+    "learningStandardId": "LSCSVId-1234",
     "contentStandard": {
         "publicationStatusDescriptor": "uri://ed-fi.org/PublicationStatusDescriptor#Deprecated",
-        "publicationYear": 2018,
-        "title": "Test-Career Technology Education",
-        "authors": [ { "author": "Test1 County" } ]
+        "publicationYear": 2015,
+        "title": "Science and Technology Education",
+        "authors": [ { "author": "Test1County" } ]
     },
-    "courseTitle": "Architecture and Construction",
+    "courseTitle": "General Physics",
     "description": "description1",
-    "learningStandardItemCode": "8",
+    "learningStandardItemCode": "90A",
     "namespace": "uri://ed-fi.org/LearningStandards",
-    "uri": "uri://ed-fi.org/LearningStandards/LearningStandardId-test-1"
+    "uri": "uri://ed-fi.org/LearningStandards/LSCSVId-1234"
 }

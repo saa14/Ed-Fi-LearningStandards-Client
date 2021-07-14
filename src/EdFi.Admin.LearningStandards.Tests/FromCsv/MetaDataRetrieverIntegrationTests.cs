@@ -33,7 +33,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             //Arrange
             string odsApiBasePath = "http://localhost:54746/";
             var edfiConfiguration = new EdFiOdsApiConfiguration(odsApiBasePath,
-                EdFiOdsApiCompatibilityVersion.v3, new AuthenticationConfiguration(null, null), null, null);
+                EdFiOdsApiCompatibilityVersion.v3, new AuthenticationConfiguration(null, null));
             string swaggerResourceEndPoint = SwaggerMetaDataUriHelper.GetUri(edfiConfiguration);
          
             string folderPath = "TestFiles\\Sample-metadata";
@@ -85,7 +85,7 @@ namespace EdFi.Admin.LearningStandards.Tests.FromCsv
             }
             string odsApiBasePath = "http://localhost:54746/";
             var edfiConfiguration = new EdFiOdsApiConfiguration(odsApiBasePath,
-                EdFiOdsApiCompatibilityVersion.v3, new AuthenticationConfiguration(null, null), null, null);
+                EdFiOdsApiCompatibilityVersion.v3, new AuthenticationConfiguration(null, null));
             string swaggerResourceEndPoint = SwaggerMetaDataUriHelper.GetUri(edfiConfiguration);
 
             string folderPath = "TestFiles\\Sample-metadata";

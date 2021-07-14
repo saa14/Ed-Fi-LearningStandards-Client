@@ -1,16 +1,17 @@
 {
-    "academicSubjects": [ { "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science" } ],
-    "gradeLevels": [ { "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade" } ],
-    "learningStandardId": "LearningStandardId-test-2",
+    "academicSubjects": [ { "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#SocialStudies" } ],
+    "gradeLevels": [ { "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade" } ],
+    "learningStandardId": "LSCSVId-5678",
+    "parentLearningStandardReference": { "learningStandardId": "LSCSVId-3456" },
     "contentStandard": {
         "publicationStatusDescriptor": "uri://ed-fi.org/PublicationStatusDescriptor#Published",
         "publicationYear": 2018,
-        "title": "Test-Career Technology Education",
-        "authors": [ { "author": "Test DOE" } ]
+        "title": "Social Education",
+        "authors": [ { "author": "TestDOE" } ]
     },
-    "courseTitle": "Architecture and Construction",
+    "courseTitle": "Government",
     "description": "description2",
-    "learningStandardItemCode": "8",
+    "learningStandardItemCode": "24B",
     "namespace": "uri://ed-fi.org/LearningStandards",
-    "uri": "uri://ed-fi.org/LearningStandards/LearningStandardId-test-2"
+    "uri": "uri://ed-fi.org/LearningStandards/LSCSVId-5678"
 }
