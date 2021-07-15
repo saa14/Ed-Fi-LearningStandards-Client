@@ -1,156 +1,172 @@
 [
-  {
-    "Name": "academicSubjects",
-    "Children": [
-      {
-        "Name": "learningStandardAcademicSubject",
+    {
+        "Name": "academicSubjects",
         "Children": [
-          {
-            "Name": "academicSubjectDescriptor",
-            "SourceColumn": "AcademicSubject",
-            "Children": []
-          }
+            {
+                "Name": "learningStandardAcademicSubject",
+                "Children": [
+                    {
+                        "Name": "academicSubjectDescriptor",
+                        "SourceColumn": "AcademicSubject",
+                        "Children": []
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  },
-  {
-    "Name": "gradeLevels",
-    "Children": [
-      {
-        "Name": "learningStandardGradeLevel",
+    },
+    {
+        "Name": "gradeLevels",
         "Children": [
-          {
-            "Name": "gradeLevelDescriptor",
-            "SourceColumn": "GradeLevel",
-            "Children": []
-          }
+            {
+                "Name": "learningStandardGradeLevel",
+                "Children": [
+                    {
+                        "Name": "gradeLevelDescriptor",
+                        "SourceColumn": "GradeLevel",
+                        "Children": []
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  },
-  {
-    "Name": "learningStandardId",
-    "SourceColumn": "LearningStandardId",
-    "Children": []
-  },
-  {
-    "Name": "parentLearningStandardReference",
-    "Children": [
-      {
+    },
+    {
         "Name": "learningStandardId",
-        "SourceColumn": "ParentLearningStandardId",
+        "SourceColumn": "LearningStandardId",
         "Children": []
-      }
-    ]
-  },
-  {
-    "Name": "contentStandard",
-    "Children": [
-      {
-        "Name": "publicationStatusDescriptor",
-        "SourceColumn": "ContentStandard_PublicationStatus",
-        "Children": []
-      },
-      {
-        "Name": "beginDate",
-        "Children": []
-      },
-      {
-        "Name": "endDate",
-        "Children": []
-      },
-      {
-        "Name": "publicationDate",
-        "Children": []
-      },
-      {
-        "Name": "publicationYear",
-        "SourceColumn": "ContentStandard_PublicationYear",
-        "Children": []
-      },
-      {
-        "Name": "title",
-        "SourceColumn": "ContentStandard_Title",
-        "Children": []
-      },
-      {
-        "Name": "uri",
-        "Children": []
-      },
-      {
-        "Name": "version",
-        "Children": []
-      },
-      {
-        "Name": "mandatingEducationOrganizationReference",
+    },
+    {
+        "Name": "parentLearningStandardReference",
         "Children": [
-          {
-            "Name": "educationOrganizationId",
-            "Children": []
-          }
-        ]
-      },
-      {
-        "Name": "authors",
-        "Children": [
-          {
-            "Name": "learningStandardContentStandardAuthor",
-            "Children": [
-              {
-                "Name": "author",
-                "SourceColumn": "ContentStandard_Author",
+            {
+                "Name": "learningStandardId",
+                "SourceColumn": "ParentLearningStandardId",
                 "Children": []
-              }
-            ]
-          }
+            }
         ]
-      }
-    ]
-  },
-  {
-    "Name": "courseTitle",
-    "SourceColumn": "CourseTitle",
-    "Children": []
-  },
-  {
-    "Name": "description",
-    "SourceColumn": "Description",
-    "Children": []
-  },
-  {
-    "Name": "identificationCodes",
-    "Children": []
-  },
-  {
-    "Name": "learningStandardCategoryDescriptor",
-    "Children": []
-  },
-  {
-    "Name": "learningStandardItemCode",
-    "SourceColumn": "LearningStandardItemCode",
-    "Children": []
-  },
-  {
-    "Name": "learningStandardScopeDescriptor",
-    "Children": []
-  },
-  {
-    "Name": "namespace",
-    "SourceColumn": "Namespace",
-    "Children": []
-  },
-  {
-    "Name": "prerequisiteLearningStandards",
-    "Children": []
-  },
-  {
-    "Name": "successCriteria",
-    "Children": []
-  },
-  {
-    "Name": "uri",
-    "SourceColumn": "URI",
-    "Children": []
-  }
+    },
+    {
+        "Name": "contentStandard",
+        "Children": [
+            {
+                "Name": "publicationStatusDescriptor",
+                "SourceColumn": "ContentStandard_PublicationStatus",
+                "Children": []
+            },
+            {
+                "Name": "beginDate",
+                "Children": []
+            },
+            {
+                "Name": "endDate",
+                "Children": []
+            },
+            {
+                "Name": "publicationDate",
+                "Children": []
+            },
+            {
+                "Name": "publicationYear",
+                "SourceColumn": "ContentStandard_PublicationYear",
+                "Children": []
+            },
+            {
+                "Name": "title",
+                "SourceColumn": "ContentStandard_Title",
+                "Children": []
+            },
+            {
+                "Name": "uri",
+                "Children": []
+            },
+            {
+                "Name": "version",
+                "Children": []
+            },
+            {
+                "Name": "mandatingEducationOrganizationReference",
+                "Children": [
+                    {
+                        "Name": "educationOrganizationId",
+                        "Children": []
+                    }
+                ]
+            },
+            {
+                "Name": "authors",
+                "Children": [
+                    {
+                        "Name": "learningStandardContentStandardAuthor",
+                        "Children": [
+                            {
+                                "Name": "author",
+                                "SourceColumn": "ContentStandard_Author",
+                                "Children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "courseTitle",
+        "SourceColumn": "CourseTitle",
+        "Children": []
+    },
+    {
+        "Name": "description",
+        "SourceColumn": "Description",
+        "Children": []
+    },
+    {
+        "Name": "identificationCodes",
+        "Children": [
+            {
+                "Name": "learningStandardIdentificationCode",
+                "Children": [
+                    {
+                        "Name": "contentStandardName",
+                        "SourceColumn": "IdCodeItem_ContentStandardName",
+                        "Children": []
+                    },
+                    {
+                        "Name": "identificationCode",
+                        "SourceColumn": "IdCodeItem_IdCode",
+                        "Children": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Name": "learningStandardCategoryDescriptor",
+        "Children": []
+    },
+    {
+        "Name": "learningStandardItemCode",
+        "SourceColumn": "LearningStandardItemCode",
+        "Children": []
+    },
+    {
+        "Name": "learningStandardScopeDescriptor",
+        "Children": []
+    },
+    {
+        "Name": "namespace",
+        "SourceColumn": "Namespace",
+        "Children": []
+    },
+    {
+        "Name": "prerequisiteLearningStandards",
+        "Children": []
+    },
+    {
+        "Name": "successCriteria",
+        "Children": []
+    },
+    {
+        "Name": "uri",
+        "SourceColumn": "URI",
+        "Children": []
+    }
 ]

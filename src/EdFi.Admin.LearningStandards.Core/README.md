@@ -44,20 +44,26 @@ The following NuGet Packages are suggested for use with the plugin connector:
 * For log4net in .NET Core [Microsoft.Extensions.Logging.Log4Net.AspNetCore](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Log4Net.AspNetCore/) (this package is very opinionated about needing to load the log4net config, and not using existing statics)
 
 #### LearningStandardsServiceCollectionExtensions
-This class includes the extension method `AddLearningStandardsServices`
-Usage:
+This class includes the extension methods `AddLearningStandardsServices` and `AddLearningStandardsSyncFromCsvSpecificServices`
+AddLearningStandardsServices usage:
 ``` csharp
 // Where serviceCollection is a variable of type IServiceCollection
 var odsApiClientConfiguration = new EdFiOdsApiClientConfiguration(retries:3,maxSimultaneousRequests:6);
 serviceCollection.AddLearningStandardsServices(odsApiClientConfiguration);
 ```
+AddLearningStandardsSyncFromCsvSpecificServices usage:
+``` csharp
+// Extension method for adding synchronize from csv specific services
+var odsApiClientConfiguration = new EdFiOdsApiClientConfiguration(retries:3,maxSimultaneousRequests:6);
+serviceCollection.AddLearningStandardsSyncFromCsvSpecificServices(odsApiClientConfiguration);
+```
 The container used could be any container that supports IServiceCollection.
 
 ### Invocation
 
-When using the `ILearningStandardsCorePluginConnector` there are properties on the connector for `LearningStandardsSynchronizer`, `LearningStandardsConfigurationValidator`, and `LearningStandardsChangesAvailable`. 
+When using the `ILearningStandardsCorePluginConnector` there are properties on the connector for `LearningStandardsSynchronizer`, `LearningStandardsConfigurationValidator`, `LearningStandardsChangesAvailable`, `LearningStandardsCsvSynchronizer`, and `LearningStandardsSyncFromCsvConfigurationValidator`. 
 
-For the direct container registration scenario, the registered Learning Standards services are available via their interfaces from the container constructed from the service collection. i.e. `ILearningStandardsConfigurationValidator`, `ILearningStandardsSynchronizer`, `ILearningStandardsChangesAvailable`.
+For the direct container registration scenario, the registered Learning Standards services are available via their interfaces from the container constructed from the service collection. i.e. `ILearningStandardsConfigurationValidator`, `ILearningStandardsSynchronizer`, `ILearningStandardsChangesAvailable`, `ILearningStandardsCsvSynchronizer`, and `ILearningStandardsSyncFromCsvConfigurationValidator`.
 
 #### Configuration
 
@@ -218,5 +224,31 @@ When retrieving, an `IChangeSequence` object will be returned, containing the pe
     {
         string EdFiApiKey { get; }
         string LearningStandardCredentialId { get; }
+    }
+```
+
+#### ILearningStandardsSyncFromCsvConfigurationValidator
+
+This interface allows for configuration object to be validated before being used with the Learning Standard synchronize from csv process.
+
+``` csharp
+public interface ILearningStandardsSyncFromCsvConfigurationValidator
+{
+   Task<IResponse> ValidateEdFiOdsApiConfigurationAsync(IEdFiOdsApiConfiguration edFiOdsApiConfiguration);
+}
+```
+
+#### ILearningStandardsCsvSynchronizer
+
+This interface allows for the learnings standards from provided csv file to be loaded into the Ed-Fi ODS API indicated by the odsApiConfiguration.
+
+``` csharp
+    public interface ILearningStandardsCsvSynchronizer
+    {
+         Task<IResponse> SynchronizeAsync(
+            IEdFiOdsApiConfiguration odsApiConfiguration,
+            ILearningStandardsSynchronizationFromCsvOptions options,
+            CancellationToken cancellationToken,
+            IProgress<LearningStandardsSynchronizerProgressInfo> progress);
     }
 ```
