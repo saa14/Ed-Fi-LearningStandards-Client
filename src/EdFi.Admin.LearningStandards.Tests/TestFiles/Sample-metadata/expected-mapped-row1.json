@@ -1,0 +1,16 @@
+{
+    "academicSubjects": [ { "academicSubjectDescriptor": "uri://ed-fi.org/AcademicSubjectDescriptor#Science" } ],
+    "gradeLevels": [ { "gradeLevelDescriptor": "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade" } ],
+    "learningStandardId": "LSCSVId-1234",
+    "contentStandard": {
+        "publicationStatusDescriptor": "uri://ed-fi.org/PublicationStatusDescriptor#Deprecated",
+        "publicationYear": 2015,
+        "title": "Science and Technology Education",
+        "authors": [ { "author": "Test1County" } ]
+    },
+    "courseTitle": "General Physics",
+    "description": "description1",
+    "learningStandardItemCode": "90A",
+    "namespace": "uri://ed-fi.org/LearningStandards",
+    "uri": "uri://ed-fi.org/LearningStandards/LSCSVId-1234"
+}

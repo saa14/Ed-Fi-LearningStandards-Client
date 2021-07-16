@@ -1,10 +1,9 @@
-﻿// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 // Licensed to the Ed-Fi Alliance under one or more agreements.
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
@@ -14,13 +13,12 @@ using EdFi.Admin.LearningStandards.Core.Configuration;
 using EdFi.Admin.LearningStandards.Core.Installers;
 using EdFi.Admin.LearningStandards.Core.Services;
 using EdFi.Admin.LearningStandards.Core.Services.Interfaces;
-using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace EdFi.Admin.LearningStandards.CLI
 {
-    public class LearningStandardsCLIApplication
+    public class LearningStandardsCLIApplication : ILearningStandardsCLIApplicationBase
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -43,11 +41,11 @@ namespace EdFi.Admin.LearningStandards.CLI
             _serviceSetup = serviceSetup;
         }
 
-        internal LearningStandardsCLIWriter CliWriter { get; private set; }
+        public bool Unattended => _options.Unattended;
 
-        internal bool Unattended => _options.Unattended;
+        public LearningStandardsCLIWriter CliWriter { get; set; }
 
-        internal async Task<IResponse> Main(string[] args)
+        public async Task<IResponse> Main(string[] args)
         {
             Console.CancelKeyPress += Console_CancelKeyPress;
 
