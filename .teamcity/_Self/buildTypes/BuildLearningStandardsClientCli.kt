@@ -36,17 +36,6 @@ object BuildLearningStandardsClientCli : BuildType ({
         param("buildConfiguration", "Release")
     }
 
-    triggers {
-        vcs {
-            id ="vcsTrigger"
-            quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_CUSTOM
-            quietPeriod = 120
-            branchFilter = """
-                +:main
-            """.trimIndent()
-        }
-    }
-
     steps {
         exec {
             name = "GitVersion"
