@@ -23,5 +23,6 @@ object LearningStandardsClientProject : Project({
     }
 
     buildType(_self.buildTypes.BuildLearningStandardsClientCli)
-    buildType(_self.buildTypes.ReleaseLearningStandardsClientCli)
+    buildType(_self.buildTypes.PublishToAzureBlob)
+    buildType(_self.buildTypes.PublishToAzureArtifacts)
 })
