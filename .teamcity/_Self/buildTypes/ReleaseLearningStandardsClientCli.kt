@@ -20,14 +20,15 @@ object ReleaseLearningStandardsClientCli : BuildType({
     }
 
     params {
-        param("env.VSS_NUGET_EXTERNAL_FEED_ENDPOINTS", """{"endpointCredentials": [{"endpoint": "%azureArtifacts.feed.nuget%","username": "%azureArtifacts.edFiBuildAgent.userName%","password": "%azureArtifacts.edFiBuildAgent.accessToken%"}]}""")
+        param("testfeed", "https://pkgs.dev.azure.com/%azureArtifacts.organization%/_packaging/EdFiTest/nuget/v3/index.json")
+        param("env.VSS_NUGET_EXTERNAL_FEED_ENDPOINTS", """{"endpointCredentials": [{"endpoint": "%testfeed%","username": "%azureArtifacts.edFiBuildAgent.userName%","password": "%azureArtifacts.edFiBuildAgent.accessToken%"}]}""")
     }
 
     steps {
         powerShell {
             name = "Publish to Azure Artifacts"
             scriptMode = script {
-                content = "nuget push -source %azureArtifacts.feed.nuget% -apikey az *.nupkg"
+                content = "nuget push -source %testfeed% -apikey az *.nupkg"
             }
         }
     }
