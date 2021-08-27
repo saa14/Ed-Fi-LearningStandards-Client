@@ -44,7 +44,7 @@ object BuildLearningStandardsClientCli : BuildType ({
             arguments = "/output buildserver"
         }
         step {
-            type = "CalculatePackageVersionODSAPI"
+            type = "CalculatePackageVersionODSAPIExp"
         }
         dotnetBuild {
             name = "Build Solution"
