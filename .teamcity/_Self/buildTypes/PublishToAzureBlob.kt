@@ -38,11 +38,21 @@ object PublishToAzureBlob : BuildType({
     }
 
     dependencies {
-        artifacts(AbsoluteId("Experimental_SMinocha_LearningStandardsClient_BuildLearningStandardsClientCli")) {
-            buildRule = lastSuccessful()
-            artifactRules = """
-                +:**/*.zip => .
-            """.trimIndent()
+        dependency(AbsoluteId("Experimental_SMinocha_LearningStandardsClient_BuildLearningStandardsClientCli")) {
+            snapshot {
+            }
+
+            artifacts {
+                buildRule = lastSuccessful()
+                cleanDestination = true
+                artifactRules = """
+                    +:*.zip => .
+                """.trimIndent()
+            }
         }
+    }
+
+    requirements {
+        equals("teamcity.agent.name", "INTEDFIBUILD3")
     }
 })
