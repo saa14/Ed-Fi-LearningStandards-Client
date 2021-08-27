@@ -18,6 +18,8 @@ object LearningStandardsClientProject : Project({
             +:refs/(pull/*)/merge
         """.trimIndent())
         param("teamcity.ui.settings.readOnly","true")
+        param("learningStandardsClient.version.major", "1")
+        param("learningStandardsClient.version.minor", "2")
     }
 
     buildType(_self.buildTypes.BuildLearningStandardsClientCli)

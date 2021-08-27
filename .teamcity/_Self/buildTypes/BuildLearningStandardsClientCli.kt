@@ -29,10 +29,8 @@ object BuildLearningStandardsClientCli : BuildType ({
     }
 
     params {
-        param("MinorPackageVersion", "2")
         param("env.Git_Branch", "%teamcity.build.branch%")
-        param("MajorPackageVersion", "1")
-        param("PackageVersion", "Placeholder - Value set during build")
+        param("PackageVersion", "%learningStandardsClient.version.major%.%learningStandardsClient.version.minor%.%build.counter%")
         param("buildConfiguration", "Release")
     }
 
@@ -42,9 +40,6 @@ object BuildLearningStandardsClientCli : BuildType ({
             enabled = false
             path = "GitVersion.exe"
             arguments = "/output buildserver"
-        }
-        step {
-            type = "CalculatePackageVersionODSAPIExp"
         }
         dotnetBuild {
             name = "Build Solution"
