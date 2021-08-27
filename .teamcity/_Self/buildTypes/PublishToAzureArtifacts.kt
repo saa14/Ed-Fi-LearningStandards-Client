@@ -8,8 +8,8 @@ package _self.buildTypes
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.powerShell
 
-object ReleaseLearningStandardsClientCli : BuildType({
-    name = "Release Ed-Fi Learning Standards Client Cli"
+object PublishToAzureArtifacts : BuildType({
+    name = "Publish Ed-Fi Learning Standards Core nuget package"
 
     enablePersonalBuilds = false
     type = BuildTypeSettings.Type.DEPLOYMENT
