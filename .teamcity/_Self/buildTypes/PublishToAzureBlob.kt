@@ -7,6 +7,8 @@ package _self.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2019_2.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.powerShell
+import jetbrains.buildServer.configs.kotlin.v2019_2.failureConditions.BuildFailureOnText
+import jetbrains.buildServer.configs.kotlin.v2019_2.failureConditions.failOnText
 
 object PublishToAzureBlob : BuildType({
     name = "Publish Ed-Fi Admin Learning Standards CLI zip"
@@ -27,7 +29,11 @@ object PublishToAzureBlob : BuildType({
                 content = """
                     ${'$'}learningStandardsClientZip = Resolve-Path "EdFi.Admin.LearningStandards.CLI.win-x64.zip"
                     ${'$'}versionSuffix = "%PackageVersion%"
-                    azcopy copy (Resolve-Path ${'$'}learningStandardsClientZip) "https://odsassets.blob.core.windows.net/public/test/EdFi.Admin.LearningStandards.CLI.win-${'$'}versionSuffix.zip"
+                    azcopy copy (Resolve-Path ${'$'}learningStandardsClientZip) "https://odsassets.blob.core.windows.net/public/test/EdFi.Admin.LearningStandards.CLI.win-${'$'}versionSuffix.zip" | Out-File -FilePath "azcopy.log"
+                    if (Select-String -Path ".\azcopy.log" -Pattern 'error' -Quiet) {
+                        ${'$'}logContent = (Get-Content -Path ".\azcopy.log" -Raw)
+                        Write-Error "Error while copying the file. ${'$'}logContent"
+                    }
                 """.trimIndent()
             }
         }
@@ -35,6 +41,13 @@ object PublishToAzureBlob : BuildType({
 
     failureConditions {
         errorMessage = true
+        failOnText {
+            conditionType = BuildFailureOnText.ConditionType.CONTAINS
+            pattern = "Error"
+            failureMessage = "Error:"
+            reverse = false
+            stopBuildOnFailure = true
+        }
     }
 
     dependencies {
