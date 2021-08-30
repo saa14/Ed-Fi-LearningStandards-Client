@@ -32,7 +32,7 @@ object PublishToAzureBlob : BuildType({
                     azcopy copy (Resolve-Path ${'$'}learningStandardsClientZip) "https://odsassets.blob.core.windows.net/public/test/EdFi.Admin.LearningStandards.CLI.win-${'$'}versionSuffix.zip" | Out-File -FilePath "azcopy.log"
                     if (Select-String -Path ".\azcopy.log" -Pattern 'error' -Quiet) {
                         ${'$'}logContent = (Get-Content -Path ".\azcopy.log" -Raw)
-                        Write-Error "Error while copying the file. ${'$'}logContent"
+                        Write-Error "Error while copying the zip file. ${'$'}logContent"
                     }
                 """.trimIndent()
             }
