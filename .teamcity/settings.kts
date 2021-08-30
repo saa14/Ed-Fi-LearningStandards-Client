@@ -27,6 +27,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 -> Tool Windows -> Maven Projects), find the generate task node
 (Plugins -> teamcity-configs -> teamcity-configs:generate), the
 'Debug' option is available in the context menu for the task.
+#######
 */
 
 version = "2019.2"
