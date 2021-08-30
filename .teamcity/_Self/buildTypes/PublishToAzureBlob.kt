@@ -27,7 +27,7 @@ object PublishToAzureBlob : BuildType({
             formatStderrAsError = true
             scriptMode = script {
                 content = """
-                    ${'$'}learningStandardsClientZip = Resolve-Path "EdFi.Admin.LearningStandards.CLI.win-x64.zip"
+                    ${'$'}learningStandardsClientZip = Resolve-Path "test.win-x64.zip"
                     ${'$'}versionSuffix = "%PackageVersion%"
                     azcopy copy (Resolve-Path ${'$'}learningStandardsClientZip) "https://odsassets.blob.core.windows.net/public/test/EdFi.Admin.LearningStandards.CLI.win-${'$'}versionSuffix.zip" | Out-File -FilePath "azcopy.log"
                     if (Select-String -Path ".\azcopy.log" -Pattern 'error' -Quiet) {
